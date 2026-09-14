@@ -1,0 +1,97 @@
+{
+	"patcher" : 	{
+		"fileversion" : 1,
+		"appversion" : 		{
+			"major" : 8,
+			"minor" : 5,
+			"revision" : 1,
+			"architecture" : "x64",
+			"modernui" : 1
+		}
+,
+		"classnamespace" : "dsp.gen",
+		"rect" : [ 640.0, 317.0, 692.0, 574.0 ],
+		"bglocked" : 0,
+		"openinpresentation" : 0,
+		"default_fontsize" : 12.0,
+		"default_fontface" : 0,
+		"default_fontname" : "Arial",
+		"gridonopen" : 1,
+		"gridsize" : [ 15.0, 15.0 ],
+		"gridsnaponopen" : 1,
+		"objectsnaponopen" : 1,
+		"statusbarvisible" : 2,
+		"toolbarvisible" : 1,
+		"lefttoolbarpinned" : 0,
+		"toptoolbarpinned" : 0,
+		"righttoolbarpinned" : 0,
+		"bottomtoolbarpinned" : 0,
+		"toolbars_unpinned_last_save" : 0,
+		"tallnewobj" : 0,
+		"boxanimatetime" : 200,
+		"enablehscroll" : 1,
+		"enablevscroll" : 1,
+		"devicewidth" : 0.0,
+		"description" : "",
+		"digest" : "",
+		"tags" : "",
+		"style" : "",
+		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
+		"boxes" : [ 			{
+				"box" : 				{
+					"code" : "//this code implements a dynamic smoothing filter \r\n//based on an algorithm by Andrew Simper.\r\n//It uses a lowpass filter whose cutoff frequency is modulated dynamically \r\n//by the signal itself and allows to track signal changes faster than a purely\r\n//static version.\n\n//The main use of this crate is to smooth noisy or stepped signals \r\n//like analog measurements from an ADC in embedded systems.\n\n\r\n\r\nParam basefreq(2); // fine tune to suit your application\r\nParam sensitivity(2); // fine tune to suit your application\r\n//clear the history\r\nHistory low1(0);\r\nHistory low2(0);\r\nHistory inz(0); \r\n\r\nwc = basefreq/samplerate; // cubic cutoff mapping done inside the algorithm\r\n\r\nlow1z = low1; \r\nlow2z = low2;\r\nbandz = low1z - low2z;\r\nwd = wc + sensitivity*abs(bandz);\r\ng = min(wd*(5.9948827 + wd*(-11.969296 + wd*15.959062)), 1);\r\nlow1 = low1z + g*(0.5*(in1 + inz) - low1z);\r\nlow2 = low2z + g*(0.5*(low1 + low1z) - low2z);\r\ninz = in1;\r\nout1 = low2;\r\n",
+					"fontface" : 0,
+					"fontname" : "<Monospaced>",
+					"fontsize" : 12.0,
+					"id" : "obj-5",
+					"maxclass" : "codebox",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 31.0, 48.0, 638.0, 473.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-1",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 31.0, 13.0, 28.0, 22.0 ],
+					"text" : "in 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-4",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 31.0, 535.0, 35.0, 22.0 ],
+					"text" : "out 1"
+				}
+
+			}
+ ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+ ]
+	}
+
+}
