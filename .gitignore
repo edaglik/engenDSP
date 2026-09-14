@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+.AppleDouble
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor files
+*~
+*.bak
+*.tmp
+*.swp
+
+# Max backup files
+*.maxpat~
+*.gendsp~
+
+# Logs
+*.log
